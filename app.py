@@ -25,7 +25,12 @@ except ImportError:
 
 def get_line_properties(line):
     """Calculates the length and 0-180 normalized angle of a line segment."""
-    x1, y1, x2, y2 = line
+    # Defensively flatten to guarantee a 1D array of 4 elements
+    flat_line = np.ravel(line)
+    if len(flat_line) != 4:
+        return 0.0, 0.0
+        
+    x1, y1, x2, y2 = flat_line
     length = np.sqrt((x2 - x1)**2 + (y2 - y1)**2)
     angle = np.degrees(np.arctan2(y2 - y1, x2 - x1)) % 180
     return length, angle
@@ -40,8 +45,13 @@ def find_intersection(line1, line2):
     Finds the mathematical intersection point (x, y) of two infinite lines.
     Returns None if the lines are perfectly parallel.
     """
-    x1, y1, x2, y2 = line1
-    x3, y3, x4, y4 = line2
+    flat1 = np.ravel(line1)
+    flat2 = np.ravel(line2)
+    if len(flat1) != 4 or len(flat2) != 4:
+        return None
+
+    x1, y1, x2, y2 = flat1
+    x3, y3, x4, y4 = flat2
 
     A1 = y2 - y1
     B1 = x1 - x2
@@ -99,11 +109,9 @@ def calculate_and_plot_angle_final(img, canny_low, canny_high, morph_kernel_size
     for c in contours:
         area = cv2.contourArea(c)
         area_pct = (area / total_page_area) * 100
-        # If it takes up more than max_area_pct, it's likely a page layout border asset
         if area > 100 and area_pct < max_area_pct:
             valid_contours.append(c)
 
-    # Fallback to absolute max if filtering stripped everything out
     if not valid_contours:
         best_contour = max(contours, key=cv2.contourArea)
     else:
@@ -146,8 +154,12 @@ def calculate_and_plot_angle_final(img, canny_low, canny_high, morph_kernel_size
 
     # 4. Extract all segments and calculate properties
     all_lines = []
-    for idx, line in enumerate(lines):
-        coords = line[0]
+    for idx, raw_line in enumerate(lines):
+        # FIX: Defensively flatten the array to prevent structure unpacking errors across versions
+        coords = np.ravel(raw_line)
+        if len(coords) != 4:
+            continue
+            
         length, angle = get_line_properties(coords)
         all_lines.append({
             'id': idx + 1,
@@ -266,10 +278,10 @@ def process_pdf_page(pdf_path, page_number=0):
 # Streamlit Web Application Interface
 # ---------------------------------------------------------------------------
 
-st.set_page_config(page_title="Open-CV Angle Detector", layout="wide")
-st.title("Open-CV Angle Detector")
+st.set_page_config(page_title="Robust Diagram Angle Detector", layout="wide")
+st.title("Extrapolated Intersection Angle Detector")
 
-# --- NEW SIDEBAR CALIBRATION ENVIRONMENT ---
+# --- SIDEBAR CALIBRATION ENVIRONMENT ---
 st.sidebar.header("🛠️ Contour Calibration Panel")
 st.sidebar.markdown("Use these configurations if the green ellipse chooses page borders or misses the diagram shape entirely.")
 
