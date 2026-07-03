@@ -1,4 +1,4 @@
-# Robust Diagram Angle Detector 📐✨
+# Vision Angle Detector 📐✨
 
 A computer vision-powered Streamlit web application that isolates schematic or diagrammatic regions within scanned documents or images, mathematically extrapolates intersecting line segments, and computes precise interior and exterior angles.
 
