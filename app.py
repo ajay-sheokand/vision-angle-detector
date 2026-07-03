@@ -283,8 +283,7 @@ st.title("Vision Angle Detector")
 
 # --- SIDEBAR CALIBRATION ENVIRONMENT ---
 st.sidebar.header("🛠️ Contour Calibration Panel")
-st.sidebar.markdown("Use these configurations if the green ellipse chooses page borders or misses the diagram shape entirely.",
-                    "Please do not change it until and unless it not detecting anything.")
+st.sidebar.markdown("Use these configurations if the green ellipse chooses page borders or misses the diagram shape entirely. Please do not change it until and unless it not detecting anything.")
 
 canny_low = st.sidebar.slider("Canny Threshold (Low)", min_value=10, max_value=150, value=30, step=5)
 canny_high = st.sidebar.slider("Canny Threshold (High)", min_value=50, max_value=300, value=100, step=10)
