@@ -278,8 +278,8 @@ def process_pdf_page(pdf_path, page_number=0):
 # Streamlit Web Application Interface
 # ---------------------------------------------------------------------------
 
-st.set_page_config(page_title="Robust Diagram Angle Detector", layout="wide")
-st.title("Extrapolated Intersection Angle Detector")
+st.set_page_config(page_title="Vision Angle Detector", layout="wide")
+st.title("Vision Angle Detector")
 
 # --- SIDEBAR CALIBRATION ENVIRONMENT ---
 st.sidebar.header("🛠️ Contour Calibration Panel")
